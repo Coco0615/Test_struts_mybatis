@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.UserDAO">
+    <resultMap id="user_res" type="entity.User">
+        <id property="user_id" column="user_id"></id>
+        <result property="user_email" column="user_email"></result>
+        <result property="nick_name" column="nick_name"></result>
+        <result property="password" column="password"></result>
+        <collection property="addresses" javaType="list" ofType="entity.Address">
+            <id property="address_id" column="address_id"></id>
+            <result property="address_name" column="address_name"></result>
+            <result property="tel" column="tel"></result>
+            <result property="receive_address" column="receive_address"></result>
+            <result property="default_state" column="default_state"></result>
+            <result property="user_id" column="user_id"></result>
+            <result property="delete_state" column="delete_state"></result>
+        </collection>
+    </resultMap>
+    <!--注册-->
+    <insert id="insertUser">
+        insert into d_user values(user_seq.nextval,#{u.user_email},#{u.nick_name},#{u.password})
+    </insert>
+    <!--登录-->
+    <select id="selectUserById" resultMap="user_res">
+        select * from d_user where user_id=#{id}
+    </select>
+    <select id="selectUserByEmail" resultMap="user_res">
+        select * from d_user where user_email=#{email}
+    </select>
+
+</mapper>

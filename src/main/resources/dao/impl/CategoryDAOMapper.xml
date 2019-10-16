@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.CategoryDAO">
+    <resultMap id="category_res" type="entity.Category">
+        <id property="category_id" column="category_id"></id>
+        <result property="category_name" column="category_name"></result>
+        <result property="parent_id" column="parent_id"></result>
+        <result property="book_count" column="book_count"></result>
+        <collection property="categories" javaType="list" ofType="entity.Category">
+            <id property="category_id" column="categoryId"></id>
+            <result property="category_name" column="categoryName"></result>
+            <result property="parent_id" column="parentId"></result>
+            <result property="book_count" column="bookCount"></result>
+        </collection>
+    </resultMap>
+    <!--查询出所有一级类型下所有的二级类型-->
+    <select id="selectAllCategorys" resultMap="category_res">
+        select c1.*,c2.category_id categoryId,c2.category_name categoryName,c2.parent_id parentId,c2.book_count bookCount
+        from d_category c1 inner join d_category c2 on c1.category_id=c2.parent_id
+    </select>
+   <!-- 根据一级类别编号查询一级类别对象以及所属的二级类别
+    参数是一级类别编号-->
+    <select id="selectCategoryByFirst" resultMap="category_res">
+        select c1.*,c2.category_id categoryId,c2.category_name categoryName,c2.parent_id parentId,c2.book_count bookCount
+        from d_category c1 inner join d_category c2 on c1.category_id=c2.parent_id
+        where c1.category_id=#{id}
+    </select>
+    <!--根据二级类别编号 查询对应的一级类别对象以及所属的二级类别
+    参数是二级类别编号-->
+    <select id="selectCategoryBySecond" resultMap="category_res">
+        select c3.*,c4.category_id categoryId,c4.category_name categoryName,c4.parent_id parentId,c4.book_count bookCount
+        from (select c2.* from (select * from d_category where category_id = #{id})c1
+        left join d_category c2 on c1.parent_id=c2.category_id) c3
+        left join d_category c4 on c3.category_id=c4.parent_id
+    </select>
+    <!--根据类别id查询类别名称-->
+    <select id="selectCategoryNameById" resultType="String">
+        select category_name from d_category where category_id=#{id}
+    </select>
+</mapper>

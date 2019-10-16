@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.CartDAO">
+    <resultMap id="cart_res" type="entity.Cart">
+        <id property="cart_id" column="cart_id"></id>
+        <result property="book_id" column="book_id"></result>
+        <result property="user_id" column="user_id"></result>
+        <result property="buy_count" column="buy_count"></result>
+        <result property="delete_state" column="delete_state"></result>
+        <result property="date" column="delete_time"></result>
+        <association property="book" javaType="entity.Book">
+            <id property="book_id" column="book_id"></id>
+            <result property="book_name" column="book_name"></result>
+            <result property="author" column="author"></result>
+            <result property="description" column="description"></result>
+            <result property="book_price" column="book_price"></result>
+            <result property="dang_price" column="dang_price"></result>
+            <result property="editorRecommend" column="editorRecommend"></result>
+            <result property="saleCount" column="saleCount"></result>
+            <result property="publishTime" column="publishTime"></result>
+            <result property="book_img" column="book_img"></result>
+            <result property="category_id" column="category_id"></result>
+        </association>
+    </resultMap>
+    <!--根据用户名id查询购物车-->
+    <select id="selectCartByUserId" resultMap="cart_res">
+        select * from d_cart c left join d_book b on c.book_id=b.book_id
+        where user_id=#{id} and delete_state=0
+    </select>
+    <!--根据cart的id变更商品图书的数量number-->
+    <update id="updateBuyCountByCartId">
+        update (select * from d_cart c left join d_book b on c.book_id=b.book_id)
+        set buy_count = #{count} where cart_id=#{id}
+    </update>
+    <!--根据用户id展示所有已经删除的订单-->
+    <select id="selectCartAfterDeleteByUserId" resultMap="cart_res">
+         select * from d_cart c left join d_book b on c.book_id=b.book_id
+         where user_id =#{id} and delete_state=1
+    </select>
+    <!--根据cart的id更新删除状态(恢复)-->
+    <update id="updateCartDeleteState">
+        update d_cart set delete_state=0,delete_time=null where cart_id=#{id}
+    </update>
+    <!--添加图书商品-->
+    <insert id="insertCart">
+        insert into d_cart values(cart_seq.nextval,#{c.book_id},#{c.user_id},#{c.buy_count},#{c.delete_state},null)
+    </insert>
+    <!--根据图书id查询cart-->
+    <select id="selectCartByBookId" resultMap="cart_res">
+        select * from d_cart where book_id=#{id} and delete_state=0
+    </select>
+    <!--点击购买book_count加1-->
+    <update id="updateCartBookCount">
+        update d_cart set buy_count=buy_count+1 where cart_id=#{id}
+    </update>
+    <!--根据cart的id删除-->
+    <update id="deleteCartById">
+        update d_cart set delete_state=1,delete_time=sysdate where cart_id=#{id}
+    </update>
+    <!--根据cart的id查询-->
+    <select id="selectCartByCartId" resultMap="cart_res">
+        select * from d_cart where cart_id=#{id} and delete_state=0
+    </select>
+    <!--根据图书id查询已删除的cart-->
+    <select id="selectDeleteCartByBookId" resultMap="cart_res">
+        select * from d_cart where book_id=#{id} and delete_state=1
+    </select>
+    <update id="updatexiangtong">
+        update d_cart set buy_count=buy_count+#{count} where book_id=#{id} and delete_state=0
+    </update>
+    <!--根据cart的id彻底删除-->
+    <delete id="chediDeleteCartById">
+        delete from d_cart where cart_id=#{id}
+    </delete>
+    <!--根据cart的id查询已删除-->
+    <select id="selectDeleteCartByCartId" resultMap="cart_res">
+        select * from d_cart where cart_id=#{id} and delete_state=1
+    </select>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.OrderDAO">
+    <resultMap id="order_res" type="entity.Order">
+        <id property="order_id" column="order_id"/>
+        <result property="order_time" column="order_time"/>
+        <result property="user_id" column="user_id"/>
+        <result property="total_price" column="total_price"/>
+        <result property="address_id" column="address_id"/>
+        <result property="order_state" column="order_state"/>
+        <collection property="items" javaType="list" ofType="entity.Item">
+            <id property="item_id" column="item_id"/>
+            <result property="book_id" column="book_id"/>
+            <result property="dang_price" column="dang_price"/>
+            <result property="buy_count" column="buy_count"/>
+            <result property="order_id" column="order_id"/>
+            <association property="book" javaType="entity.Book">
+                <id property="book_id" column="book_id"></id>
+                <result property="book_name" column="book_name"></result>
+                <result property="author" column="author"></result>
+                <result property="description" column="description"></result>
+                <result property="book_price" column="book_price"></result>
+                <result property="dang_price" column="dang_price"></result>
+                <result property="editorRecommend" column="editorRecommend"></result>
+                <result property="saleCount" column="saleCount"></result>
+                <result property="publishTime" column="publishTime"></result>
+                <result property="book_img" column="book_img"></result>
+                <result property="category_id" column="category_id"></result>
+            </association>
+        </collection>
+    </resultMap>
+   <!--增加订单-->
+    <insert id="insertOrder">
+        <selectKey order="BEFORE" resultType="int" keyProperty="order.order_id">
+            select order_seq.nextval from dual
+        </selectKey>
+        insert into d_order values(#{order.order_id},sysdate,#{order.user_id},#{order.total_price},#{order.address_id},0)
+    </insert>
+    <!--查询订单-->
+    <select id="selectOrderByUserId" resultMap="order_res">
+        select * from d_order o
+        left join d_item i on o.order_id=i.order_id
+        left join d_book b on i.book_id=b.book_id
+        where o.user_id=#{id}
+    </select>
+    <!--修改订单状态-->
+    <update id="updateOrderByOrderId">
+        update d_order set order_state=1 where order_id=#{id}
+    </update>
+</mapper>

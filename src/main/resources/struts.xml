@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="category" extends="struts-default" namespace="/main">
+		<action name="selectAllInMain" class="action.MainAction" method="selectAllInMain">
+			<result name="mainJSP">/main/main.jsp</result>
+		</action>
+		<action name="selectBookById" class="action.BookAction" method="selectBookById">
+			<result name="showBook">/main/product.jsp</result>
+		</action>
+		<action name="selectAllByFirstInSecondMain" class="action.MainSecondBookAction" method="selectAllByFirstInSecondMain">
+			<result name="bookListJSP">/main/book_list.jsp</result>
+		</action>
+		<action name="selectAllBySecondInSecondMain" class="action.MainSecondBookAction" method="selectAllBySecondInSecondMain">
+			<result name="bookListJSP">/main/book_list.jsp</result>
+		</action>
+	</package>
+	<package name="user" extends="struts-default" namespace="/user">
+		<action name="login" class="action.UserAction" method="login">
+			<result name="selectAllInMain" type="redirectAction">
+				<param name="namespace">/main</param>
+				<param name="actionName">selectAllInMain</param>
+			</result>
+			<result name="fail" type="redirect">/user/login_form.jsp</result>
+		</action>
+		<action name="register" class="action.UserAction" method="register">
+			<result name="register_formJSP">/user/register_form.jsp</result>
+			<result name="register_okJSP">/user/register_ok.jsp</result>
+		</action>
+		<action name="yanzhengma" class="action.UserAction" method="yanzhengma">
+
+		</action>
+		<action name="ajax" class="action.UserAction" method="ajax"></action>
+		<action name="outLogin" class="action.UserAction" method="outLogin">
+			<result name="login_formJSP" type="redirect">/user/login_form.jsp</result>
+		</action>
+	</package>
+	<package name="address" extends="struts-default" namespace="/address">
+		<action name="selectAddressByUserId" class="action.AddressAction" method="selectAddressByUserId">
+			<result name="myAddressJSP">/address/my_address.jsp</result>
+			<result name="login">/user/login_form.jsp</result>
+		</action>
+		<action name="insertAddress" class="action.AddressAction" method="insertAddress">
+			<result name="selectAddressByUserId" type="redirectAction">selectAddressByUserId</result>
+		</action>
+		<action name="updateDefaultAddress" class="action.AddressAction" method="updateDefaultAddress">
+			<result name="selectAddressByUserId" type="redirectAction">selectAddressByUserId</result>
+		</action>
+		<action name="deleteAddressById" class="action.AddressAction" method="deleteAddressById">
+			<result name="selectAddressByUserId" type="redirectAction">selectAddressByUserId</result>
+		</action>
+	</package>
+	<package name="cart" extends="struts-default" namespace="/cart">
+		<action name="selectCartByUserId" class="action.CartAction" method="selectCartByUserId">
+			<result name="cartListJSP">/cart/cart_list.jsp</result>
+			<result name="login">/user/login_form.jsp</result>
+		</action>
+        <action name="updateBuyCountByCartId" class="action.CartAction" method="updateBuyCountByCartId">
+            <result name="selectCartByUserId" type="redirectAction">selectCartByUserId</result>
+        </action>
+		<action name="undelete" class="action.CartAction" method="undelete">
+			<result name="selectCartByUserId" type="redirectAction">selectCartByUserId</result>
+		</action>
+		<action name="buy" class="action.CartAction" method="buy">
+		</action>
+		<action name="deleteCartById" class="action.CartAction" method="deleteCartById">
+			<result name="selectCartByUserId" type="redirectAction">selectCartByUserId</result>
+		</action>
+	</package>
+	<package name="order" extends="struts-default" namespace="/order">
+		<action name="verifyOrder" class="action.OrderAction" method="verifyOrder">
+			<result name="order_infoJSP">/order/order_info.jsp</result>
+		</action>
+		<action name="getAddress" class="action.OrderAction" method="getAddress">
+			<result name="address_formJSP">/order/address_form.jsp</result>
+		</action>
+		<action name="insertOrder" class="action.OrderAction" method="insertOrder">
+			<result name="order_okJSP">/order/order_ok.jsp</result>
+		</action>
+		<action name="selectOrderByUserId" class="action.OrderAction" method="selectOrderByUserId">
+			<result name="my_orderJSP">/order/my_order.jsp</result>
+		</action>
+		<action name="updateOrderByOrderId" class="action.OrderAction" method="updateOrderByOrderId">
+			<result name="selectOrderByUserId" type="redirectAction">selectOrderByUserId</result>
+		</action>
+	</package>
+	<package name="comment" extends="struts-default" namespace="/comment">
+		<action name="insertComment" class="action.CommentAction" method="insertComment">
+			<result name="selectBookByIdComment" type="redirectAction">selectBookByIdComment</result>
+		</action>
+		<action name="selectBookByIdComment" class="action.BookAction" method="selectBookByIdComment">
+			<result name="showBook">/main/product.jsp</result>
+		</action>
+		<action name="deleteCommentByCommentId" class="action.CommentAction" method="deleteCommentByCommentId">
+			<result name="selectBookByIdComment" type="redirectAction">selectBookByIdComment</result>
+		</action>
+	</package>
+
+</struts>

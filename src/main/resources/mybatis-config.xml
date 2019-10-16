@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<properties resource="jdbc.properties"/>
+	<environments default="user">
+		<environment id="user">
+			<transactionManager type="JDBC"></transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}"/>
+				<property name="url" value="${jdbc.url}"/>
+				<property name="username" value="${jdbc.username}"/>
+				<property name="password" value="${jdbc.password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="dao/impl/CategoryDAOMapper.xml"/>
+		<mapper resource="dao/impl/BookDAOMapper.xml"/>
+		<mapper resource="dao/impl/UserDAOMapper.xml"/>
+		<mapper resource="dao/impl/AddressDAOMapper.xml"/>
+		<mapper resource="dao/impl/CartDAOMapper.xml"/>
+		<mapper resource="dao/impl/CommentDAOMapper.xml"/>
+		<mapper resource="dao/impl/OrderDAOMapper.xml"/>
+		<mapper resource="dao/impl/ItemDAOMapper.xml"/>
+	</mappers>
+
+
+
+</configuration>

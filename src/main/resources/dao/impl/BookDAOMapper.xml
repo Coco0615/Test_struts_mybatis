@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.BookDAO">
+    <resultMap id="book_res" type="entity.Book">
+        <id property="book_id" column="book_id"></id>
+        <result property="book_name" column="book_name"></result>
+        <result property="author" column="author"></result>
+        <result property="description" column="description"></result>
+        <result property="book_price" column="book_price"></result>
+        <result property="dang_price" column="dang_price"></result>
+        <result property="editorRecommend" column="editorRecommend"></result>
+        <result property="saleCount" column="saleCount"></result>
+        <result property="publishTime" column="publishTime"></result>
+        <result property="book_img" column="book_img"></result>
+        <result property="category_id" column="category_id"></result>
+    </resultMap>
+    <!--编辑推荐的图书-->
+    <select id="selectEditorRecommendBooks" resultMap="book_res">
+        select *
+        from(select b.*,rownum r from d_book b where b.editorRecommend=1)
+        where r between 1 and 2
+    </select>
+    <!--销量最多的图书-->
+    <select id="selectSaleCountMaxBooks" resultMap="book_res">
+        select *
+        from(select b.*,rownum r from(select * from d_book order by saleCount desc)b)
+        where r between 1 and 8
+    </select>
+    <!--根据小说类型的一级编号查询到的图书-->
+    <select id="selectAllBooksByFirst" resultMap="book_res">
+       select z.*
+          from(select b.*,rownum r
+                from (select c1.*,c2.category_id categoryId,c2.category_name categoryName,c2.parent_id parentId,c2.book_count bookCount
+                      from d_category c1 inner join d_category c2 on c1.category_id=c2.parent_id) d
+                inner join d_book b on b.category_id=d.categoryId
+                where d.category_id=#{id}) z
+          where r between ((#{page}-1)*#{rows}+1) and (#{page}*#{rows})
+    </select>
+    <!--根据小说类型的二级编号查询到的图书-->
+    <select id="selectAllBooksBySecond" resultMap="book_res">
+         select *
+        from (select b1.*,rownum r from d_book b1 where category_id = #{id})
+        where r between ((#{page}-1)*#{rows}+1) and (#{page}*#{rows})
+    </select>
+    <!--最新上架-->
+    <select id="selectNewArrivalBooks" resultMap="book_res">
+        select *
+        from (select b1.*,rownum r
+              from (select * from d_book order by publishTime desc)b1)
+        where r between 1 and 8
+    </select>
+    <!--新书热卖-->
+    <select id="selectNewAndSaleMaxBooks" resultMap="book_res">
+        select *
+        from(select b.*,rownum r
+              from(select * from d_book order by publishTime desc,saleCount desc)b)
+        where r between 1 and 8
+    </select>
+    <!--通过图书id查询图书-->
+    <select id="selectBookById" resultMap="book_res">
+        select * from d_book where book_id=#{id}
+    </select>
+    <!--查询一级目录图书的个数-->
+    <select id="countFirst" resultType="Integer">
+        select count(*)
+        from(select b.*,rownum r
+                from (select c1.*,c2.category_id categoryId,c2.category_name categoryName,c2.parent_id parentId,c2.book_count bookCount
+                      from d_category c1 inner join d_category c2 on c1.category_id=c2.parent_id) d
+                inner join d_book b on b.category_id=d.categoryId
+                where d.category_id=#{id})
+    </select>
+    <!--根据二级目录查询图书的个数-->
+    <select id="countSecond" resultType="Integer">
+        select count(*) from (select * from d_book b1 where category_id = #{id})
+    </select>
+
+</mapper>
